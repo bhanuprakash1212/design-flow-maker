@@ -728,14 +728,12 @@ const FlowChartContent = () => {
                 <div className="h-10 border-r border-gray-300"></div>
                 
                 <Popover>
-                  <TooltipTrigger asChild>
-                    <PopoverTrigger asChild>
-                      <button className="flex flex-col items-center p-2 hover:bg-gray-100 rounded-md" title="Node Color">
-                        <Palette className="h-5 w-5" />
-                        <span className="text-xs mt-1">Color</span>
-                      </button>
-                    </PopoverTrigger>
-                  </TooltipTrigger>
+                  <PopoverTrigger asChild>
+                    <button className="flex flex-col items-center p-2 hover:bg-gray-100 rounded-md" title="Node Color">
+                      <Palette className="h-5 w-5" />
+                      <span className="text-xs mt-1">Color</span>
+                    </button>
+                  </PopoverTrigger>
                   <PopoverContent className="w-64 p-3">
                     <h3 className="text-sm font-medium mb-2">Node Background Color</h3>
                     <div className="grid grid-cols-7 gap-2">
@@ -754,18 +752,15 @@ const FlowChartContent = () => {
                       ))}
                     </div>
                   </PopoverContent>
-                  <TooltipContent>Node Color</TooltipContent>
                 </Popover>
                 
                 <Popover>
-                  <TooltipTrigger asChild>
-                    <PopoverTrigger asChild>
-                      <button className="flex flex-col items-center p-2 hover:bg-gray-100 rounded-md" title="Edge Style">
-                        <ArrowUpRight className="h-5 w-5" />
-                        <span className="text-xs mt-1">Lines</span>
-                      </button>
-                    </PopoverTrigger>
-                  </TooltipTrigger>
+                  <PopoverTrigger asChild>
+                    <button className="flex flex-col items-center p-2 hover:bg-gray-100 rounded-md" title="Edge Style">
+                      <ArrowUpRight className="h-5 w-5" />
+                      <span className="text-xs mt-1">Lines</span>
+                    </button>
+                  </PopoverTrigger>
                   <PopoverContent className="w-64 p-3">
                     <h3 className="text-sm font-medium mb-2">Edge Styles</h3>
                     <div className="space-y-2">
@@ -784,7 +779,6 @@ const FlowChartContent = () => {
                       ))}
                     </div>
                   </PopoverContent>
-                  <TooltipContent>Edge Style</TooltipContent>
                 </Popover>
                 
                 <Tooltip>
