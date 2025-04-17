@@ -1,13 +1,28 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { Layout } from "@/components/Layout";
+import FlowChart from "@/components/flowchart/FlowChart";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <Layout>
+      <div className="h-full w-full">
+        <header className="bg-white p-4 border-b">
+          <div className="flex justify-between items-center">
+            <h1 className="text-xl font-bold">User Flow</h1>
+            <div className="space-x-2">
+              <button className="px-3 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700">
+                Share
+              </button>
+              <button className="px-3 py-1.5 border border-gray-300 rounded hover:bg-gray-50">
+                Save
+              </button>
+            </div>
+          </div>
+        </header>
+        <div className="h-[calc(100%-4rem)]">
+          <FlowChart />
+        </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 
