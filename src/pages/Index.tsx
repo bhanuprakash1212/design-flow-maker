@@ -2,7 +2,7 @@
 import { Layout } from "@/components/Layout";
 import FlowChart from "@/components/flowchart/FlowChart";
 import { Button } from "@/components/ui/button";
-import { Download, Share, Save, Undo, Redo, ZoomIn, ZoomOut } from "lucide-react";
+import { Download, Share, Save, Undo, Redo, ZoomIn, ZoomOut, X } from "lucide-react";
 
 const Index = () => {
   return (

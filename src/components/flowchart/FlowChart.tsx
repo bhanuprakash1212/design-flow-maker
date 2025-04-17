@@ -73,7 +73,120 @@ interface CustomEdge extends Edge {
   };
 }
 
-// Use an empty flow as initial state
+const templates = {
+  blank: {
+    nodes: [],
+    edges: []
+  },
+  simpleProcess: {
+    nodes: [
+      {
+        id: 'node-1',
+        type: 'process',
+        position: { x: 250, y: 100 },
+        data: { label: 'Start Process' },
+        style: { backgroundColor: '#e0f2fe' }
+      },
+      {
+        id: 'node-2',
+        type: 'process',
+        position: { x: 250, y: 200 },
+        data: { label: 'Step 1' },
+        style: { backgroundColor: '#f3f4f6' }
+      },
+      {
+        id: 'node-3',
+        type: 'decision',
+        position: { x: 250, y: 300 },
+        data: { label: 'Decision' },
+        style: { width: 150, height: 100 }
+      },
+      {
+        id: 'node-4',
+        type: 'process',
+        position: { x: 100, y: 400 },
+        data: { label: 'Option A' },
+        style: { backgroundColor: '#dcfce7' }
+      },
+      {
+        id: 'node-5',
+        type: 'process',
+        position: { x: 400, y: 400 },
+        data: { label: 'Option B' },
+        style: { backgroundColor: '#fee2e2' }
+      },
+      {
+        id: 'node-6',
+        type: 'process',
+        position: { x: 250, y: 500 },
+        data: { label: 'End Process' },
+        style: { backgroundColor: '#e0f2fe' }
+      }
+    ],
+    edges: [
+      { id: 'e1-2', source: 'node-1', target: 'node-2', animated: false, style: { stroke: '#b8b8b8' } },
+      { id: 'e2-3', source: 'node-2', target: 'node-3', animated: false, style: { stroke: '#b8b8b8' } },
+      { id: 'e3-4', source: 'node-3', target: 'node-4', animated: false, style: { stroke: '#b8b8b8' } },
+      { id: 'e3-5', source: 'node-3', target: 'node-5', animated: false, style: { stroke: '#b8b8b8' } },
+      { id: 'e4-6', source: 'node-4', target: 'node-6', animated: false, style: { stroke: '#b8b8b8' } },
+      { id: 'e5-6', source: 'node-5', target: 'node-6', animated: false, style: { stroke: '#b8b8b8' } }
+    ]
+  },
+  feedback: {
+    nodes: [
+      {
+        id: 'start',
+        type: 'process',
+        position: { x: 250, y: 50 },
+        data: { label: 'Start' },
+        style: { backgroundColor: '#e0f2fe' }
+      },
+      {
+        id: 'create',
+        type: 'process',
+        position: { x: 250, y: 150 },
+        data: { label: 'Create Product' },
+        style: { backgroundColor: '#f3f4f6' }
+      },
+      {
+        id: 'feedback',
+        type: 'process',
+        position: { x: 250, y: 250 },
+        data: { label: 'Collect Feedback' },
+        style: { backgroundColor: '#fef3c7' }
+      },
+      {
+        id: 'improve',
+        type: 'decision',
+        position: { x: 250, y: 350 },
+        data: { label: 'Improvements Needed?' },
+      },
+      {
+        id: 'ship',
+        type: 'process',
+        position: { x: 400, y: 450 },
+        data: { label: 'Ship Product' },
+        style: { backgroundColor: '#dcfce7' }
+      },
+      {
+        id: 'iterate',
+        type: 'process',
+        position: { x: 100, y: 450 },
+        data: { label: 'Iterate Design' },
+        style: { backgroundColor: '#f5d0fe' }
+      }
+    ],
+    edges: [
+      { id: 'e-start-create', source: 'start', target: 'create', animated: false, style: { stroke: '#b8b8b8' } },
+      { id: 'e-create-feedback', source: 'create', target: 'feedback', animated: false, style: { stroke: '#b8b8b8' } },
+      { id: 'e-feedback-improve', source: 'feedback', target: 'improve', animated: false, style: { stroke: '#b8b8b8' } },
+      { id: 'e-improve-ship', source: 'improve', target: 'ship', animated: false, label: 'No', style: { stroke: '#b8b8b8' } },
+      { id: 'e-improve-iterate', source: 'improve', target: 'iterate', animated: false, label: 'Yes', style: { stroke: '#b8b8b8' } },
+      { id: 'e-iterate-feedback', source: 'iterate', target: 'feedback', animated: true, style: { stroke: '#b8b8b8' } }
+    ]
+  }
+};
+
 const initialNodes: Node[] = [];
 const initialEdges: CustomEdge[] = [];
 
@@ -94,7 +207,6 @@ const edgeStyles = [
   { id: "animated", label: "Animated", style: { stroke: '#b8b8b8' }, animated: true },
 ];
 
-// Custom function to get the bounding rectangle of all nodes
 function getRectOfNodes(nodes: Node[]) {
   if (nodes.length === 0) {
     return { x: 0, y: 0, width: 0, height: 0 };
@@ -123,7 +235,6 @@ function getRectOfNodes(nodes: Node[]) {
   };
 }
 
-// Custom function to calculate transform for bounds
 function getTransformForBounds(
   bounds: { width: number; height: number; x: number; y: number },
   size: { width: number; height: number },
@@ -151,43 +262,64 @@ const FlowChartContent = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const reactFlowInstance = useReactFlow();
+  const [selectedTemplate, setSelectedTemplate] = useState('blank');
+  const [showTemplates, setShowTemplates] = useState(false);
 
   const selectedNodeObj = nodes.find(node => node.id === selectedNode);
   const selectedEdgeObj = edges.find(edge => edge.id === selectedEdge);
 
   const [history, setHistory] = useState<{nodes: Node[], edges: CustomEdge[]}[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
+  const [isHistoryAction, setIsHistoryAction] = useState(false);
+
+  useEffect(() => {
+    if (nodes.length === 0 && edges.length === 0) {
+      setNodes(templates.blank.nodes);
+      setEdges(templates.blank.edges as CustomEdge[]);
+      
+      setHistory([{nodes: templates.blank.nodes, edges: templates.blank.edges as CustomEdge[]}]);
+      setHistoryIndex(0);
+    }
+  }, []);
 
   useEffect(() => {
     if (nodes.length > 0 || edges.length > 0) {
-      if (historyIndex === history.length - 1) {
-        setHistory(prev => [...prev.slice(0, historyIndex + 1), {nodes, edges}]);
-        setHistoryIndex(prev => prev + 1);
+      if (!isHistoryAction) {
+        const newHistory = [...history.slice(0, historyIndex + 1), {nodes: [...nodes], edges: [...edges]}];
+        setHistory(newHistory);
+        setHistoryIndex(newHistory.length - 1);
       }
+      setIsHistoryAction(false);
     }
   }, [nodes, edges]);
 
   const handleUndo = () => {
     if (historyIndex > 0) {
+      setIsHistoryAction(true);
       const prevState = history[historyIndex - 1];
-      setNodes(prevState.nodes);
-      setEdges(prevState.edges);
+      setNodes([...prevState.nodes]);
+      setEdges([...prevState.edges]);
       setHistoryIndex(historyIndex - 1);
+      
+      toast({
+        title: "Undo",
+        description: "Previous action undone",
+      });
     }
   };
 
   const handleRedo = () => {
     if (historyIndex < history.length - 1) {
+      setIsHistoryAction(true);
       const nextState = history[historyIndex + 1];
-      setNodes(nextState.nodes);
-      setEdges(prevState => {
-        return nextState.edges.map(edge => ({
-          ...edge,
-          animated: edge.animated || false,
-          style: edge.style || { stroke: '#b8b8b8' }
-        }));
-      });
+      setNodes([...nextState.nodes]);
+      setEdges([...nextState.edges]);
       setHistoryIndex(historyIndex + 1);
+      
+      toast({
+        title: "Redo",
+        description: "Action redone",
+      });
     }
   };
 
@@ -223,6 +355,24 @@ const FlowChartContent = () => {
       title: "Node Added",
       description: `A new ${type} node has been added to the canvas`,
     });
+  };
+
+  const applyTemplate = (templateName: string) => {
+    if (templates[templateName as keyof typeof templates]) {
+      const template = templates[templateName as keyof typeof templates];
+      setNodes(template.nodes);
+      setEdges(template.edges as CustomEdge[]);
+      
+      setHistory([{nodes: template.nodes, edges: template.edges as CustomEdge[]}]);
+      setHistoryIndex(0);
+      
+      setShowTemplates(false);
+      
+      toast({
+        title: "Template Applied",
+        description: `The ${templateName} template has been applied`,
+      });
+    }
   };
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -424,7 +574,6 @@ const FlowChartContent = () => {
         transform: `translate(${transform[0]}px, ${transform[1]}px) scale(${transform[2]})`,
       },
       filter: (node) => {
-        // Don't include controls in the exported image
         if (
           node?.classList?.contains('react-flow__panel') ||
           node?.classList?.contains('react-flow__controls') ||
@@ -494,6 +643,75 @@ const FlowChartContent = () => {
 
   return (
     <div className="h-full w-full bg-gray-50 flex">
+      {showTemplates && (
+        <div className="absolute inset-0 z-10 bg-black bg-opacity-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg shadow-xl w-[600px] max-h-[80vh] overflow-auto p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Select a Template</h2>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={() => setShowTemplates(false)}
+                className="rounded-full h-8 w-8"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div 
+                className="border rounded-lg p-4 hover:border-blue-500 cursor-pointer transition-all"
+                onClick={() => applyTemplate('blank')}
+              >
+                <h3 className="font-medium mb-2">Blank Canvas</h3>
+                <div className="bg-gray-100 h-32 rounded flex items-center justify-center text-gray-400">
+                  Start from scratch
+                </div>
+              </div>
+              
+              <div 
+                className="border rounded-lg p-4 hover:border-blue-500 cursor-pointer transition-all"
+                onClick={() => applyTemplate('simpleProcess')}
+              >
+                <h3 className="font-medium mb-2">Simple Process</h3>
+                <div className="bg-gray-100 h-32 rounded flex items-center justify-center">
+                  <div className="w-3/4 h-24 bg-white rounded shadow-sm relative">
+                    <div className="absolute w-1/2 h-2 bg-blue-500 top-4 left-1/4 rounded"></div>
+                    <div className="absolute w-6 h-6 bg-yellow-300 top-8 left-1/4 rounded-full"></div>
+                    <div className="absolute w-6 h-6 bg-green-300 top-8 right-1/4 rounded-full"></div>
+                    <div className="absolute w-1/2 h-2 bg-blue-500 bottom-4 left-1/4 rounded"></div>
+                  </div>
+                </div>
+              </div>
+              
+              <div 
+                className="border rounded-lg p-4 hover:border-blue-500 cursor-pointer transition-all"
+                onClick={() => applyTemplate('feedback')}
+              >
+                <h3 className="font-medium mb-2">Feedback Loop</h3>
+                <div className="bg-gray-100 h-32 rounded flex items-center justify-center">
+                  <div className="w-3/4 h-24 bg-white rounded shadow-sm relative">
+                    <div className="absolute w-12 h-3 bg-blue-500 top-6 left-1/4 rounded"></div>
+                    <div className="absolute w-8 h-8 transform rotate-45 bg-yellow-300 top-8 left-1/2 -ml-4"></div>
+                    <div className="absolute w-12 h-3 bg-purple-500 bottom-6 right-1/4 rounded"></div>
+                    <div className="absolute w-12 h-12 border-2 border-dashed border-purple-500 right-1/4 top-1/2 -mt-6 rounded-full"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-6 flex justify-end">
+              <Button 
+                variant="ghost" 
+                onClick={() => setShowTemplates(false)}
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+      
       <div 
         ref={reactFlowWrapper}
         className={`flex-1 ${showProperties ? 'border-r border-gray-200' : ''}`}
@@ -512,7 +730,7 @@ const FlowChartContent = () => {
         >
           <Controls />
           <MiniMap />
-          <Background gap={16} color="#f1f1f1" variant={BackgroundVariant.Dots} />
+          <Background gap={20} size={1} color="#f0f0f0" variant={BackgroundVariant.Lines} />
           
           <input
             type="file"
@@ -528,7 +746,13 @@ const FlowChartContent = () => {
                 <div className="flex items-center space-x-2">
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleUndo} disabled={historyIndex <= 0}>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="h-8 w-8" 
+                        onClick={handleUndo} 
+                        disabled={historyIndex <= 0}
+                      >
                         <Undo className="h-4 w-4" />
                       </Button>
                     </TooltipTrigger>
@@ -537,7 +761,13 @@ const FlowChartContent = () => {
                   
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleRedo} disabled={historyIndex >= history.length - 1}>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="h-8 w-8" 
+                        onClick={handleRedo} 
+                        disabled={historyIndex >= history.length - 1}
+                      >
                         <Redo className="h-4 w-4" />
                       </Button>
                     </TooltipTrigger>
@@ -607,6 +837,22 @@ const FlowChartContent = () => {
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent side="right">Delete</TooltipContent>
+                </Tooltip>
+                
+                <div className="h-px bg-gray-200 w-full"></div>
+                
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="h-8 w-8" 
+                      onClick={() => setShowTemplates(true)}
+                    >
+                      <LayoutTemplate className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">Templates</TooltipContent>
                 </Tooltip>
               </div>
             </TooltipProvider>

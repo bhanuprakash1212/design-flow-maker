@@ -27,14 +27,11 @@
   stroke-width: 2;
 }
 
-/* Styling for the diamond-shaped decision nodes */
-.diamond-node::before {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  transform: rotate(45deg);
-  z-index: -1;
+/* Diamond node styling */
+.diamond-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .react-flow__node {
@@ -94,4 +91,19 @@
   background-color: #eff6ff;
   border-color: #3b82f6;
   color: #3b82f6;
+}
+
+/* Grid background styling */
+.react-flow__background {
+  background-size: 20px 20px;
+  background-image: 
+    linear-gradient(to right, #f0f0f0 1px, transparent 1px),
+    linear-gradient(to bottom, #f0f0f0 1px, transparent 1px);
+}
+
+/* Style for dark mode if needed */
+.dark .react-flow__background {
+  background-image: 
+    linear-gradient(to right, #2a2a2a 1px, transparent 1px),
+    linear-gradient(to bottom, #2a2a2a 1px, transparent 1px);
 }
