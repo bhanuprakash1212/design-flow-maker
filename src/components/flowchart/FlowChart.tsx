@@ -12,6 +12,7 @@ import {
   Panel,
   BackgroundVariant,
   Node,
+  ReactFlowProvider,
   useReactFlow,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
@@ -61,6 +62,15 @@ const nodeTypes = {
   custom: CustomNode,
   image: ImageNode,
 };
+
+interface CustomEdge extends Edge {
+  animated: boolean;
+  style: {
+    stroke: string;
+    strokeDasharray?: string;
+    strokeWidth?: number;
+  };
+}
 
 const initialNodes: Node[] = [
   {
@@ -170,7 +180,7 @@ const initialNodes: Node[] = [
   },
 ];
 
-const initialEdges = [
+const initialEdges: CustomEdge[] = [
   {
     id: 'e1-2',
     source: 'start',
@@ -254,15 +264,15 @@ const colorPalette = [
 ];
 
 const edgeStyles = [
-  { id: "default", label: "Default", style: { stroke: '#b8b8b8' } },
-  { id: "dashed", label: "Dashed", style: { stroke: '#b8b8b8', strokeDasharray: '5,5' } },
-  { id: "thick", label: "Thick", style: { stroke: '#b8b8b8', strokeWidth: 3 } },
-  { id: "animated", label: "Animated", animated: true, style: { stroke: '#b8b8b8' } },
+  { id: "default", label: "Default", style: { stroke: '#b8b8b8' }, animated: false },
+  { id: "dashed", label: "Dashed", style: { stroke: '#b8b8b8', strokeDasharray: '5,5' }, animated: false },
+  { id: "thick", label: "Thick", style: { stroke: '#b8b8b8', strokeWidth: 3 }, animated: false },
+  { id: "animated", label: "Animated", style: { stroke: '#b8b8b8' }, animated: true },
 ];
 
-export const FlowChart = () => {
+const FlowChartContent = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<CustomEdge>(initialEdges);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [selectedEdge, setSelectedEdge] = useState<string | null>(null);
   const [showProperties, setShowProperties] = useState(false);
@@ -275,7 +285,7 @@ export const FlowChart = () => {
   const selectedNodeObj = nodes.find(node => node.id === selectedNode);
   const selectedEdgeObj = edges.find(edge => edge.id === selectedEdge);
 
-  const [history, setHistory] = useState<{nodes: Node[], edges: Edge[]}[]>([]);
+  const [history, setHistory] = useState<{nodes: Node[], edges: CustomEdge[]}[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
 
   useEffect(() => {
@@ -300,18 +310,26 @@ export const FlowChart = () => {
     if (historyIndex < history.length - 1) {
       const nextState = history[historyIndex + 1];
       setNodes(nextState.nodes);
-      setEdges(nextState.edges);
+      setEdges(prevState => {
+        return nextState.edges.map(edge => ({
+          ...edge,
+          animated: edge.animated || false,
+          style: edge.style || { stroke: '#b8b8b8' }
+        }));
+      });
       setHistoryIndex(historyIndex + 1);
     }
   };
 
   const onConnect = useCallback(
     (params: Connection) => {
-      setEdges((eds) => addEdge({ 
-        ...params, 
+      const newEdge: CustomEdge = {
+        ...params,
+        id: `e${params.source}-${params.target}-${Date.now()}`,
         animated: edgeStyle.animated,
         style: edgeStyle.style,
-      }, eds));
+      };
+      setEdges((eds) => addEdge(newEdge, eds));
     },
     [setEdges, edgeStyle]
   );
@@ -824,6 +842,14 @@ export const FlowChart = () => {
         </div>
       )}
     </div>
+  );
+};
+
+export const FlowChart = () => {
+  return (
+    <ReactFlowProvider>
+      <FlowChartContent />
+    </ReactFlowProvider>
   );
 };
 
