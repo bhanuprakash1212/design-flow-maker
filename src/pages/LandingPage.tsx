@@ -1,60 +1,112 @@
 
 import { Link } from 'react-router-dom';
-import { ArrowRight, Square, LayoutTemplate, Diamond as DiamondIcon } from 'lucide-react';
+import { 
+  ArrowRight, 
+  Square, 
+  LayoutTemplate, 
+  Diamond as DiamondIcon,
+  BarChart3, 
+  Workflow, 
+  Lightbulb,
+  Users,
+  Github,
+  Twitter,
+  Linkedin
+} from 'lucide-react';
 import { useState } from 'react';
+import { Button } from '@/components/ui/button';
 
 const LandingPage = () => {
   const [email, setEmail] = useState('');
   
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-white">
       {/* Navigation */}
-      <nav className="container mx-auto px-6 py-4">
+      <nav className="container mx-auto px-6 py-4 border-b">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-purple-600">
               <path d="M3 5.5L9 2L15 5.5L21 2V18.5L15 22L9 18.5L3 22V5.5Z" stroke="currentColor" strokeWidth="2" />
             </svg>
-            <span className="ml-2 text-2xl font-bold text-gray-800">FlowDesigner</span>
+            <span className="ml-2 text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">FlowDesign</span>
           </div>
           <div className="hidden md:flex items-center space-x-8">
             <a href="#features" className="text-gray-600 hover:text-gray-900">Features</a>
             <a href="#templates" className="text-gray-600 hover:text-gray-900">Templates</a>
             <a href="#pricing" className="text-gray-600 hover:text-gray-900">Pricing</a>
+            <a href="#testimonials" className="text-gray-600 hover:text-gray-900">Testimonials</a>
           </div>
           <div className="flex items-center space-x-4">
             <Link to="/login" className="px-4 py-2 rounded text-gray-600 hover:text-gray-900">Log in</Link>
-            <Link to="/diagrams" className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700">Get Started</Link>
+            <Link to="/editor" className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors">
+              Try Free
+            </Link>
           </div>
         </div>
       </nav>
       
       {/* Hero */}
-      <div className="container mx-auto px-6 py-16 text-center">
-        <h1 className="text-5xl font-bold text-gray-900 mb-6">Design Beautiful Flowcharts Easily</h1>
-        <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-10">
-          Create professional diagrams, flowcharts, and visualizations in minutes with our intuitive design tools.
-        </p>
-        <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-10">
-          <Link to="/diagrams" className="px-8 py-3 bg-purple-600 text-white rounded-md hover:bg-purple-700 flex items-center justify-center">
-            <span>Start Designing</span>
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </Link>
-          <a href="#demo" className="px-8 py-3 border border-gray-300 rounded-md hover:bg-gray-100">
-            Watch Demo
-          </a>
+      <div className="container mx-auto px-6 py-20">
+        <div className="flex flex-col md:flex-row items-center">
+          <div className="md:w-1/2 md:pr-12">
+            <h1 className="text-5xl font-bold text-gray-900 mb-6 leading-tight">
+              Professional Flowcharts Made <span className="bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">Simple</span>
+            </h1>
+            <p className="text-xl text-gray-600 mb-8">
+              Create stunning diagrams, flowcharts, and visualizations with our intuitive design tools. Perfect for teams, presentations, and documentation.
+            </p>
+            <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-8">
+              <Button asChild className="bg-purple-600 hover:bg-purple-700">
+                <Link to="/editor" className="px-8 py-3 flex items-center justify-center">
+                  <span>Start Designing</span>
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+              <Button variant="outline" asChild>
+                <a href="#demo" className="px-8 py-3">
+                  Watch Demo
+                </a>
+              </Button>
+            </div>
+            <div className="flex items-center text-sm text-gray-500">
+              <svg className="h-5 w-5 text-green-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              <span>No credit card required</span>
+              <span className="mx-3">•</span>
+              <svg className="h-5 w-5 text-green-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              <span>Free for personal use</span>
+            </div>
+          </div>
+          <div className="md:w-1/2 mt-12 md:mt-0">
+            <div className="relative">
+              <div className="absolute -top-6 -left-6 w-full h-full bg-purple-200 rounded-lg transform rotate-3"></div>
+              <img 
+                src="/lovable-uploads/9d893983-ae62-4cda-a41b-6298d90df48e.png" 
+                alt="FlowDesigner Interface" 
+                className="relative z-10 rounded-lg shadow-xl" 
+              />
+            </div>
+          </div>
         </div>
-        <div className="mt-12">
-          <img 
-            src="/lovable-uploads/9d893983-ae62-4cda-a41b-6298d90df48e.png" 
-            alt="FlowDesigner Interface" 
-            className="rounded-lg shadow-2xl max-w-full h-auto" 
-          />
+      </div>
+      
+      {/* Logos */}
+      <div className="bg-gray-50 py-16">
+        <div className="container mx-auto px-6">
+          <p className="text-center text-gray-500 text-sm mb-8">TRUSTED BY TEAMS AT</p>
+          <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-8">
+            {['Microsoft', 'Google', 'Airbnb', 'Spotify', 'Netflix', 'Amazon'].map(company => (
+              <div key={company} className="text-gray-400 font-bold text-xl">{company}</div>
+            ))}
+          </div>
         </div>
       </div>
       
       {/* Features */}
-      <div id="features" className="bg-white py-16">
+      <div id="features" className="py-20">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Powerful Features for Complex Workflows</h2>
@@ -64,42 +116,113 @@ const LandingPage = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="p-6 border border-gray-200 rounded-lg">
+            <div className="p-6 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
               <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
                 <Square className="h-6 w-6 text-purple-600" />
               </div>
               <h3 className="text-xl font-bold mb-2">Process Nodes</h3>
-              <p className="text-gray-600">Create clear process blocks with customizable content and connections.</p>
+              <p className="text-gray-600">Create clear process blocks with customizable content and connections. Perfect for step-by-step workflows.</p>
             </div>
             
-            <div className="p-6 border border-gray-200 rounded-lg">
+            <div className="p-6 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
               <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
                 <DiamondIcon className="h-6 w-6 text-purple-600" />
               </div>
               <h3 className="text-xl font-bold mb-2">Decision Points</h3>
-              <p className="text-gray-600">Add decision diamonds with yes/no branches to model complex logic.</p>
+              <p className="text-gray-600">Add decision diamonds with yes/no branches to model complex logic and conditional pathways.</p>
             </div>
             
-            <div className="p-6 border border-gray-200 rounded-lg">
+            <div className="p-6 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
               <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
                 <LayoutTemplate className="h-6 w-6 text-purple-600" />
               </div>
               <h3 className="text-xl font-bold mb-2">Custom Nodes</h3>
-              <p className="text-gray-600">Design your own node types with custom shapes, colors, and behaviors.</p>
+              <p className="text-gray-600">Design your own node types with custom shapes, colors, and behaviors to match your specific needs.</p>
+            </div>
+            
+            <div className="p-6 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
+                <Workflow className="h-6 w-6 text-purple-600" />
+              </div>
+              <h3 className="text-xl font-bold mb-2">Smart Connections</h3>
+              <p className="text-gray-600">Connect nodes with intelligent routing that automatically adapts to your diagram layout.</p>
+            </div>
+            
+            <div className="p-6 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
+                <BarChart3 className="h-6 w-6 text-purple-600" />
+              </div>
+              <h3 className="text-xl font-bold mb-2">Data Visualization</h3>
+              <p className="text-gray-600">Transform complex data into clear, visually appealing diagrams that tell a story.</p>
+            </div>
+            
+            <div className="p-6 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
+                <Lightbulb className="h-6 w-6 text-purple-600" />
+              </div>
+              <h3 className="text-xl font-bold mb-2">Template Library</h3>
+              <p className="text-gray-600">Start faster with pre-built templates for common diagram types and workflows.</p>
             </div>
           </div>
         </div>
       </div>
       
+      {/* Testimonials */}
+      <div id="testimonials" className="bg-gray-50 py-20">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">What Our Users Say</h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Thousands of professionals love using FlowDesign for their diagramming needs.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                quote: "FlowDesign has transformed how our team documents processes. The intuitive interface saves us hours every week.",
+                author: "Sarah Johnson",
+                role: "Product Manager, Acme Inc."
+              },
+              {
+                quote: "The best diagramming tool I've used. The ability to customize nodes and create professional flows in minutes is game-changing.",
+                author: "Michael Chen",
+                role: "UX Designer, TechCorp"
+              },
+              {
+                quote: "We use FlowDesign for all our client presentations. It helps us communicate complex ideas in a simple, visual way.",
+                author: "Emily Rodriguez",
+                role: "Consultant, Strategy Partners"
+              }
+            ].map((testimonial, index) => (
+              <div key={index} className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                <div className="flex items-center mb-4">
+                  {[1, 2, 3, 4, 5].map(star => (
+                    <svg key={star} className="h-5 w-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-gray-600 mb-4">"{testimonial.quote}"</p>
+                <div>
+                  <p className="font-semibold">{testimonial.author}</p>
+                  <p className="text-sm text-gray-500">{testimonial.role}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      
       {/* CTA */}
-      <div className="bg-purple-700 py-16">
+      <div className="py-20 bg-gradient-to-r from-purple-600 to-purple-800">
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-3xl font-bold text-white mb-6">Ready to start designing?</h2>
           <p className="text-xl text-purple-200 max-w-2xl mx-auto mb-10">
-            Join thousands of users creating professional flowcharts today.
+            Join thousands of professionals creating stunning flowcharts today.
           </p>
           <div className="max-w-md mx-auto">
-            <div className="flex flex-col sm:flex-row shadow-lg rounded-lg overflow-hidden">
+            <div className="flex flex-col sm:flex-row overflow-hidden rounded-lg shadow-lg">
               <input 
                 type="email" 
                 value={email}
@@ -107,76 +230,79 @@ const LandingPage = () => {
                 placeholder="Enter your email" 
                 className="flex-1 px-4 py-3 focus:outline-none"
               />
-              <button className="px-6 py-3 bg-purple-900 text-white font-medium hover:bg-purple-800">
-                Get Started
+              <button className="px-6 py-3 bg-purple-900 text-white font-medium hover:bg-purple-800 transition-colors">
+                Start Free Trial
               </button>
             </div>
+            <p className="text-sm text-purple-200 mt-3">14-day free trial. No credit card required.</p>
           </div>
         </div>
       </div>
       
       {/* Footer */}
-      <footer className="bg-gray-800 text-white py-12">
+      <footer className="bg-gray-900 text-white py-12">
         <div className="container mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between">
-            <div className="mb-6 md:mb-0">
-              <div className="flex items-center">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            <div>
+              <div className="flex items-center mb-4">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M3 5.5L9 2L15 5.5L21 2V18.5L15 22L9 18.5L3 22V5.5Z" stroke="white" strokeWidth="2" />
                 </svg>
-                <span className="ml-2 text-xl font-bold">FlowDesigner</span>
+                <span className="ml-2 text-xl font-bold">FlowDesign</span>
               </div>
-              <p className="mt-2 text-gray-400">
+              <p className="text-gray-400 mb-4">
                 Create professional flowcharts quickly and easily.
               </p>
+              <div className="flex space-x-4">
+                <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                  <Twitter className="h-5 w-5" />
+                </a>
+                <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                  <Github className="h-5 w-5" />
+                </a>
+                <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                  <Linkedin className="h-5 w-5" />
+                </a>
+              </div>
             </div>
             
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
-              <div>
-                <h3 className="text-gray-300 font-semibold mb-4">Product</h3>
-                <ul className="space-y-2">
-                  <li><a href="#" className="text-gray-400 hover:text-white">Features</a></li>
-                  <li><a href="#" className="text-gray-400 hover:text-white">Pricing</a></li>
-                  <li><a href="#" className="text-gray-400 hover:text-white">Templates</a></li>
-                </ul>
-              </div>
-              
-              <div>
-                <h3 className="text-gray-300 font-semibold mb-4">Resources</h3>
-                <ul className="space-y-2">
-                  <li><a href="#" className="text-gray-400 hover:text-white">Documentation</a></li>
-                  <li><a href="#" className="text-gray-400 hover:text-white">Tutorials</a></li>
-                  <li><a href="#" className="text-gray-400 hover:text-white">Blog</a></li>
-                </ul>
-              </div>
-              
-              <div>
-                <h3 className="text-gray-300 font-semibold mb-4">Company</h3>
-                <ul className="space-y-2">
-                  <li><a href="#" className="text-gray-400 hover:text-white">About</a></li>
-                  <li><a href="#" className="text-gray-400 hover:text-white">Contact</a></li>
-                  <li><a href="#" className="text-gray-400 hover:text-white">Careers</a></li>
-                </ul>
-              </div>
+            <div>
+              <h3 className="text-gray-300 font-semibold mb-4">Product</h3>
+              <ul className="space-y-2">
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Features</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Pricing</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Templates</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Integrations</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="text-gray-300 font-semibold mb-4">Resources</h3>
+              <ul className="space-y-2">
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Documentation</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Tutorials</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Blog</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Support</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="text-gray-300 font-semibold mb-4">Company</h3>
+              <ul className="space-y-2">
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">About</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Careers</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Contact</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy</a></li>
+              </ul>
             </div>
           </div>
           
-          <div className="border-t border-gray-700 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400">© 2025 FlowDesigner. All rights reserved.</p>
-            <div className="flex space-x-4 mt-4 md:mt-0">
-              <a href="#" className="text-gray-400 hover:text-white">
-                <span className="sr-only">Twitter</span>
-                <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
-                </svg>
-              </a>
-              
-              <a href="#" className="text-gray-400 hover:text-white">
-                <span className="sr-only">GitHub</span>
-                <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
-                </svg>
-              </a>
+          <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+            <p className="text-gray-400">© 2025 FlowDesign. All rights reserved.</p>
+            <div className="flex flex-wrap gap-4 mt-4 md:mt-0">
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">Terms</a>
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy</a>
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">Cookies</a>
             </div>
           </div>
         </div>

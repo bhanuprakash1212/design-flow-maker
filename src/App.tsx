@@ -21,6 +21,11 @@ const App = () => (
           <Route path="/" element={<LandingPage />} />
           <Route path="/editor" element={<Index />} />
           <Route path="/diagrams" element={<DiagramsPage />} />
+          {/* Placeholder routes for new sidebar items */}
+          <Route path="/templates" element={<Navigate to="/editor" replace />} />
+          <Route path="/tutorials" element={<Navigate to="/editor" replace />} />
+          <Route path="/settings" element={<Navigate to="/editor" replace />} />
+          <Route path="/help" element={<Navigate to="/editor" replace />} />
           {/* Redirect /payments to /editor for now */}
           <Route path="/payments" element={<Navigate to="/editor" replace />} />
           <Route path="*" element={<NotFound />} />
