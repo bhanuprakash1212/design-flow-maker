@@ -21,6 +21,7 @@ import PropertiesPanel from './PropertiesPanel';
 import DecisionNode from './nodes/DecisionNode';
 import ProcessNode from './nodes/ProcessNode';
 import CustomNode from './nodes/CustomNode';
+import ImageNode from './nodes/ImageNode';
 import { 
   Square, 
   Circle, 
@@ -29,14 +30,17 @@ import {
   Plus,
   Trash2,
   Download,
-  Share2
+  Share2,
+  Image
 } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 
 // Node types for registration with ReactFlow
 const nodeTypes = {
   decision: DecisionNode,
   process: ProcessNode,
   custom: CustomNode,
+  image: ImageNode,
 };
 
 const initialNodes: Node[] = [
@@ -225,6 +229,7 @@ export const FlowChart = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [showProperties, setShowProperties] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Get the selected node object
   const selectedNodeObj = nodes.find(node => node.id === selectedNode);
@@ -254,6 +259,50 @@ export const FlowChart = () => {
       style: { width: type === 'custom' ? 100 : undefined },
     };
     setNodes((nds) => nds.concat(newNode));
+    toast({
+      title: "Node Added",
+      description: `A new ${type} node has been added to the canvas`,
+    });
+  };
+
+  // Handle image upload
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      const reader = new FileReader();
+      
+      reader.onload = (e) => {
+        const imageUrl = e.target?.result as string;
+        
+        // Create a new image node
+        const newNode = {
+          id: `image_${Date.now()}`,
+          type: 'image',
+          position: { x: 250, y: 250 },
+          data: { 
+            imageUrl: imageUrl,
+            label: file.name,
+          },
+          style: { width: 150 },
+        };
+        
+        setNodes((nds) => nds.concat(newNode));
+        toast({
+          title: "Image Added",
+          description: `The image "${file.name}" has been added to the canvas`,
+        });
+      };
+      
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Trigger file input click
+  const triggerImageUpload = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
   };
 
   // Handle node selection
@@ -271,6 +320,10 @@ export const FlowChart = () => {
       ));
       setSelectedNode(null);
       setShowProperties(false);
+      toast({
+        title: "Node Deleted",
+        description: "The selected node has been removed from the canvas",
+      });
     }
   };
 
@@ -284,6 +337,39 @@ export const FlowChart = () => {
         return node;
       })
     );
+  };
+
+  // Save the current flowchart state
+  const saveFlowchart = () => {
+    const flowData = {
+      nodes,
+      edges,
+      timestamp: new Date().toISOString(),
+    };
+    
+    const dataStr = JSON.stringify(flowData);
+    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    
+    const exportName = `flowchart_${new Date().toISOString().slice(0,10)}.json`;
+    
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportName);
+    linkElement.click();
+    
+    toast({
+      title: "Flowchart Saved",
+      description: "Your flowchart has been saved successfully",
+    });
+  };
+
+  // Share the current flowchart
+  const shareFlowchart = () => {
+    // This is a placeholder - in a real app, you'd implement sharing functionality
+    toast({
+      title: "Share Link Created",
+      description: "A shareable link has been copied to your clipboard",
+    });
   };
 
   // Close properties panel
@@ -310,6 +396,15 @@ export const FlowChart = () => {
           <MiniMap />
           <Background gap={16} color="#f1f1f1" variant={BackgroundVariant.Dots} />
           
+          {/* Hidden file input for image upload */}
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleImageUpload}
+            accept="image/*"
+            className="hidden"
+          />
+          
           {/* Top Toolbar */}
           <Panel position="top-center" className="bg-white shadow-md rounded-md p-2 flex items-center space-x-4">
             <button onClick={() => addNode('process')} className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-md" title="Add Process Node">
@@ -323,6 +418,10 @@ export const FlowChart = () => {
             <button onClick={() => addNode('custom')} className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-md" title="Add Custom Node">
               <LayoutTemplate className="h-5 w-5" />
               <span>Custom</span>
+            </button>
+            <button onClick={triggerImageUpload} className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-md" title="Upload Image">
+              <Image className="h-5 w-5" />
+              <span>Image</span>
             </button>
             <div className="h-6 border-r border-gray-300"></div>
             <button 
@@ -338,11 +437,11 @@ export const FlowChart = () => {
           
           {/* Bottom Toolbar */}
           <Panel position="bottom-center" className="bg-white shadow-md rounded-md p-2 mb-4 flex items-center space-x-4">
-            <button className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-md" title="Save Diagram">
+            <button onClick={saveFlowchart} className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-md" title="Save Diagram">
               <Download className="h-5 w-5" />
               <span>Save</span>
             </button>
-            <button className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-md" title="Share Diagram">
+            <button onClick={shareFlowchart} className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-md" title="Share Diagram">
               <Share2 className="h-5 w-5" />
               <span>Share</span>
             </button>

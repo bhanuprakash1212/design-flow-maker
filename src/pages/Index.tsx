@@ -1,3 +1,4 @@
+
 import { Layout } from "@/components/Layout";
 import FlowChart from "@/components/flowchart/FlowChart";
 
@@ -7,12 +8,12 @@ const Index = () => {
       <div className="h-full w-full">
         <header className="bg-white p-4 border-b">
           <div className="flex justify-between items-center">
-            <h1 className="text-xl font-bold">User Flow</h1>
+            <h1 className="text-xl font-bold">Flow Designer</h1>
             <div className="space-x-2">
-              <button className="px-3 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700">
+              <button className="px-3 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
                 Share
               </button>
-              <button className="px-3 py-1.5 border border-gray-300 rounded hover:bg-gray-50">
+              <button className="px-3 py-1.5 border border-gray-300 rounded hover:bg-gray-50 transition-colors">
                 Save
               </button>
             </div>
