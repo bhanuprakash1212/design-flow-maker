@@ -1,3 +1,4 @@
+
 import React, { useCallback, useState, useRef, useEffect } from 'react';
 import {
   ReactFlow,
@@ -14,10 +15,13 @@ import {
   Node,
   ReactFlowProvider,
   useReactFlow,
+  getRectOfNodes,
+  getTransformForBounds,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import './flowchart.css';
 import PropertiesPanel from './PropertiesPanel';
+import { toPng } from 'html-to-image';
 
 import DecisionNode from './nodes/DecisionNode';
 import ProcessNode from './nodes/ProcessNode';
@@ -72,186 +76,9 @@ interface CustomEdge extends Edge {
   };
 }
 
-const initialNodes: Node[] = [
-  {
-    id: 'start',
-    type: 'process',
-    data: { label: 'User Flow' },
-    position: { x: 250, y: 0 },
-  },
-  {
-    id: 'decision1',
-    type: 'decision',
-    data: { label: 'Is user country?' },
-    position: { x: 250, y: 100 },
-  },
-  {
-    id: 'yes1',
-    type: 'custom',
-    data: { 
-      label: '',
-      content: <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M5 12L10 17L20 7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-      </div> 
-    },
-    position: { x: 175, y: 180 },
-  },
-  {
-    id: 'no1',
-    type: 'custom',
-    data: { 
-      label: '',
-      content: <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M18 6L6 18M6 6L18 18" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-      </div> 
-    },
-    position: { x: 325, y: 180 },
-  },
-  {
-    id: 'process1',
-    type: 'process',
-    data: { 
-      label: 'Internationalized',
-      flags: true
-    },
-    position: { x: 130, y: 250 },
-    style: { width: 180 },
-  },
-  {
-    id: 'process2',
-    type: 'process',
-    data: { label: 'Not Accessible' },
-    position: { x: 350, y: 250 },
-    style: { width: 120 },
-  },
-  {
-    id: 'exit1',
-    type: 'custom',
-    data: { 
-      label: 'Exit',
-      variant: 'dark',
-    },
-    position: { x: 380, y: 350 },
-    style: { width: 60 },
-  },
-  {
-    id: 'custom1',
-    type: 'custom',
-    data: { 
-      label: 'Account',
-      variant: 'purple',
-    },
-    position: { x: 130, y: 330 },
-    style: { width: 80 },
-  },
-  {
-    id: 'custom2',
-    type: 'custom',
-    data: { 
-      label: 'Currency',
-      variant: 'purple',
-    },
-    position: { x: 130, y: 390 },
-    style: { width: 80 },
-  },
-  {
-    id: 'custom3',
-    type: 'custom',
-    data: { 
-      label: 'Country',
-      variant: 'purple',
-    },
-    position: { x: 130, y: 450 },
-    style: { width: 80 },
-  },
-  {
-    id: 'custom4',
-    type: 'custom',
-    data: { 
-      label: 'Popular System',
-      variant: 'purple',
-    },
-    position: { x: 130, y: 510 },
-    style: { width: 140 },
-  },
-];
-
-const initialEdges: CustomEdge[] = [
-  {
-    id: 'e1-2',
-    source: 'start',
-    target: 'decision1',
-    animated: false,
-    style: { stroke: '#b8b8b8' },
-  },
-  {
-    id: 'e2-3',
-    source: 'decision1',
-    target: 'yes1',
-    animated: false,
-    style: { stroke: '#b8b8b8' },
-  },
-  {
-    id: 'e2-4',
-    source: 'decision1',
-    target: 'no1',
-    animated: false,
-    style: { stroke: '#b8b8b8' },
-  },
-  {
-    id: 'e3-5',
-    source: 'yes1',
-    target: 'process1',
-    animated: false,
-    style: { stroke: '#b8b8b8' },
-  },
-  {
-    id: 'e4-6',
-    source: 'no1',
-    target: 'process2',
-    animated: false,
-    style: { stroke: '#b8b8b8' },
-  },
-  {
-    id: 'e6-7',
-    source: 'process2',
-    target: 'exit1',
-    animated: false,
-    style: { stroke: '#b8b8b8' },
-  },
-  {
-    id: 'e5-8',
-    source: 'process1',
-    target: 'custom1',
-    animated: false,
-    style: { stroke: '#b8b8b8' },
-  },
-  {
-    id: 'e8-9',
-    source: 'custom1',
-    target: 'custom2',
-    animated: false,
-    style: { stroke: '#b8b8b8' },
-  },
-  {
-    id: 'e9-10',
-    source: 'custom2',
-    target: 'custom3',
-    animated: false,
-    style: { stroke: '#b8b8b8' },
-  },
-  {
-    id: 'e10-11',
-    source: 'custom3',
-    target: 'custom4',
-    animated: false,
-    style: { stroke: '#b8b8b8' },
-  },
-];
+// Use an empty flow as initial state
+const initialNodes: Node[] = [];
+const initialEdges: CustomEdge[] = [];
 
 const colorPalette = [
   "#f3f4f6", // light gray
@@ -280,6 +107,7 @@ const FlowChartContent = () => {
   const [edgeStyle, setEdgeStyle] = useState(edgeStyles[0]);
   const [copiedNode, setCopiedNode] = useState<Node | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const reactFlowInstance = useReactFlow();
 
   const selectedNodeObj = nodes.find(node => node.id === selectedNode);
@@ -525,17 +353,84 @@ const FlowChartContent = () => {
   };
 
   const exportAsPNG = () => {
-    toast({
-      title: "Export as PNG",
-      description: "Your flowchart has been exported as PNG",
+    if (!reactFlowWrapper.current || nodes.length === 0) {
+      toast({
+        title: "Cannot Export",
+        description: "There are no nodes to export or the flow is not ready",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const nodesBounds = getRectOfNodes(nodes);
+    const transform = getTransformForBounds(
+      nodesBounds,
+      {
+        width: nodesBounds.width + 100,
+        height: nodesBounds.height + 100,
+      },
+      0.5
+    );
+
+    toPng(reactFlowWrapper.current, {
+      backgroundColor: '#ffffff',
+      width: nodesBounds.width + 100,
+      height: nodesBounds.height + 100,
+      style: {
+        width: nodesBounds.width + 100,
+        height: nodesBounds.height + 100,
+        transform: `translate(${transform[0]}px, ${transform[1]}px) scale(${transform[2]})`,
+      },
+      filter: (node) => {
+        // Don't include controls in the exported image
+        if (
+          node?.classList?.contains('react-flow__panel') ||
+          node?.classList?.contains('react-flow__controls') ||
+          node?.classList?.contains('react-flow__minimap') ||
+          node?.classList?.contains('properties-panel')
+        ) {
+          return false;
+        }
+        return true;
+      },
+    })
+    .then((dataUrl) => {
+      const link = document.createElement('a');
+      link.download = `flowchart_${new Date().toISOString().slice(0,10)}.png`;
+      link.href = dataUrl;
+      link.click();
+      
+      toast({
+        title: "Export as PNG",
+        description: "Your flowchart has been exported as PNG",
+      });
+    })
+    .catch((error) => {
+      console.error('Error exporting image:', error);
+      toast({
+        title: "Export Failed",
+        description: "There was an error exporting your flowchart",
+        variant: "destructive"
+      });
     });
   };
 
   const shareFlowchart = () => {
-    toast({
-      title: "Share Link Created",
-      description: "A shareable link has been copied to your clipboard",
-    });
+    navigator.clipboard.writeText(`${window.location.origin}/editor?shared=true`)
+      .then(() => {
+        toast({
+          title: "Share Link Created",
+          description: "A shareable link has been copied to your clipboard",
+        });
+      })
+      .catch((error) => {
+        console.error('Error copying to clipboard:', error);
+        toast({
+          title: "Share Failed",
+          description: "There was an error creating a shareable link",
+          variant: "destructive"
+        });
+      });
   };
 
   const closeProperties = () => {
@@ -557,7 +452,10 @@ const FlowChartContent = () => {
 
   return (
     <div className="h-full w-full bg-gray-50 flex">
-      <div className={`flex-1 ${showProperties ? 'border-r border-gray-200' : ''}`}>
+      <div 
+        ref={reactFlowWrapper}
+        className={`flex-1 ${showProperties ? 'border-r border-gray-200' : ''}`}
+      >
         <ReactFlow
           nodes={nodes}
           edges={edges}
