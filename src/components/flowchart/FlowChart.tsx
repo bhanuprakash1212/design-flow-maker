@@ -1,4 +1,3 @@
-
 import React, { useCallback, useState, useRef, useEffect } from 'react';
 import {
   ReactFlow,
@@ -15,8 +14,6 @@ import {
   Node,
   ReactFlowProvider,
   useReactFlow,
-  getRectOfNodes,
-  getTransformForBounds,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import './flowchart.css';
@@ -96,6 +93,51 @@ const edgeStyles = [
   { id: "thick", label: "Thick", style: { stroke: '#b8b8b8', strokeWidth: 3 }, animated: false },
   { id: "animated", label: "Animated", style: { stroke: '#b8b8b8' }, animated: true },
 ];
+
+// Custom function to get the bounding rectangle of all nodes
+function getRectOfNodes(nodes: Node[]) {
+  if (nodes.length === 0) {
+    return { x: 0, y: 0, width: 0, height: 0 };
+  }
+
+  let minX = Infinity;
+  let minY = Infinity;
+  let maxX = -Infinity;
+  let maxY = -Infinity;
+
+  nodes.forEach((node) => {
+    const nodeWidth = node.width || 150; // Default width if not specified
+    const nodeHeight = node.height || 50; // Default height if not specified
+
+    minX = Math.min(minX, node.position.x);
+    minY = Math.min(minY, node.position.y);
+    maxX = Math.max(maxX, node.position.x + nodeWidth);
+    maxY = Math.max(maxY, node.position.y + nodeHeight);
+  });
+
+  return {
+    x: minX,
+    y: minY,
+    width: maxX - minX,
+    height: maxY - minY,
+  };
+}
+
+// Custom function to calculate transform for bounds
+function getTransformForBounds(
+  bounds: { width: number; height: number; x: number; y: number },
+  size: { width: number; height: number },
+  padding: number = 0.1
+) {
+  const xScale = size.width / bounds.width;
+  const yScale = size.height / bounds.height;
+  const scale = Math.min(xScale, yScale) * (1 - padding);
+
+  const xOffset = -bounds.x * scale + (size.width - bounds.width * scale) / 2;
+  const yOffset = -bounds.y * scale + (size.height - bounds.height * scale) / 2;
+
+  return [xOffset, yOffset, scale];
+}
 
 const FlowChartContent = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -377,8 +419,8 @@ const FlowChartContent = () => {
       width: nodesBounds.width + 100,
       height: nodesBounds.height + 100,
       style: {
-        width: nodesBounds.width + 100,
-        height: nodesBounds.height + 100,
+        width: nodesBounds.width + 100 + 'px',
+        height: nodesBounds.height + 100 + 'px',
         transform: `translate(${transform[0]}px, ${transform[1]}px) scale(${transform[2]})`,
       },
       filter: (node) => {
